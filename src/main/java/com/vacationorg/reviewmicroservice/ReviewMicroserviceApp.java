@@ -1,13 +1,13 @@
-package com.bce.restapi;
+package com.vacationorg.reviewmicroservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RestapiApplication {
+public class ReviewMicroserviceApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RestapiApplication.class, args);
+		SpringApplication.run(ReviewMicroserviceApp.class, args);
 	}
 
 }

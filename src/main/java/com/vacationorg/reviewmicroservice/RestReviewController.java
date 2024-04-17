@@ -1,4 +1,4 @@
-package com.bce.restapi;
+package com.vacationorg.reviewmicroservice;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RestGreetingController {
+public class RestReviewController {
 
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong();
 
 	@GetMapping("/greeting")
-	public RestGreeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-		return new RestGreeting(counter.incrementAndGet(), String.format(template, name));
+	public RestReview greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
+		return new RestReview(counter.incrementAndGet(), String.format(template, name));
 	}
 }

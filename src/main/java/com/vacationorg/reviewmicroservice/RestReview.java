@@ -1,12 +1,12 @@
-package com.bce.restapi;
+package com.vacationorg.reviewmicroservice;
 
 
-	public class RestGreeting {
+	public class RestReview {
 
 		private final long id;
 		private final String content;
 
-		public RestGreeting(long id, String content) {
+		public RestReview(long id, String content) {
 			this.id = id;
 			this.content = content;
 		}

@@ -8,11 +8,11 @@
 		<version>2.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.bce</groupId>
-	<artifactId>restapi</artifactId>
+	<groupId>com.vacationorg</groupId>
+	<artifactId>reviewmicroservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>restapi</name>
-	<description>Demo project for Spring Boot</description>
+	<name>ReviewMicroservice</name>
+	<description>Microservice for Group 1 Review Functional Area</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
