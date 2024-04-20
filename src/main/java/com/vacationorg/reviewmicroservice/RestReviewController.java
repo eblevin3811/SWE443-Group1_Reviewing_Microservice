@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,19 +26,22 @@ public class RestReviewController {
 	//	return new RestReview(counter.incrementAndGet(), String.format(template, name));
 	//}
 
-	@GetMapping("/getPropertyReviews")
-	public RestPropertyReview getPropertyReviews(@RequestParam(value = "propertyID", defaultValue = "123") long propertyID){
+	@GetMapping("/getPropertyReviews/{propertyID}")
+	public RestPropertyReview getPropertyReviews(@PathVariable(value = "propertyID") long propertyID){
 		//Build review list given property id
 		if (!initPropReview){
 			init(propertyID);
 		}
 
 		RestPropertyReview toDisplay = listingReviewsService.findPropertyReviewByID(propertyID);
+
+		if (toDisplay == null)
+			return new RestPropertyReview();
 		
 		return toDisplay;
 	}
 
-	@GetMapping("/prepareReviewList")
+	@GetMapping("/prepareReviewList/{userID}")
 	public List<RestReview> prepareReviewList(@RequestParam(value = "userID", defaultValue = "123") long userID){
 		if (!initPropReview){
 			init(123);

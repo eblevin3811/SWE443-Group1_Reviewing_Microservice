@@ -26,6 +26,9 @@ public class GetListingReviewsService {
             return null;
         }
 
+        if (propertyReviews.size() == 0)
+            return null;
+
         return propertyReviews.get(0);
     }
 
