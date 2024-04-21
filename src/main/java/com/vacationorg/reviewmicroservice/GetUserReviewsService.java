@@ -25,6 +25,14 @@ public class GetUserReviewsService {
         return restReviewRepository.findByUserID(userID);
     }
 
+    public RestReview findReviewByReviewID(long reviewID){
+        try{
+            return restReviewRepository.findByReviewID(reviewID).get(0);
+        } catch (Exception e){
+            return null;
+        }
+    }
+
     //Call outside
     public String getUserReviews(long userID){
         //TODO: CALL SCHEDULING FUNCTIONAL AREA

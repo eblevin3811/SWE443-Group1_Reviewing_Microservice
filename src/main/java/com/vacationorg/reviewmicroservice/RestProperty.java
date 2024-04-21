@@ -17,6 +17,14 @@ public class RestProperty {
 
     public RestProperty(){}
 
+    public RestProperty(long propertyID, String propertyLocation, String propertyName, Date startDate, Date endDate){
+        this.propertyID = propertyID;
+        this.propertyLocation = propertyLocation;
+        this.propertyName = propertyName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Long getPropertyID(){
         return this.propertyID;
     }

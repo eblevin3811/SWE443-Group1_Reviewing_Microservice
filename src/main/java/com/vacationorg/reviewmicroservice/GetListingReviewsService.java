@@ -15,6 +15,7 @@ public class GetListingReviewsService {
     @Autowired
     RestPropertyReviewRepository restPropertyReviewRepository;
 
+    //Save
     public void saveRestPropertyReview(RestPropertyReview restPropertyReview){
         restPropertyReviewRepository.save(restPropertyReview);
     }
