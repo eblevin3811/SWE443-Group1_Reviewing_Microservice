@@ -1,5 +1,9 @@
 package com.vacationorg.reviewmicroservice;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +11,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
-
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.util.Chars;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Simple;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,11 +33,6 @@ public class RestReviewController {
 	GetUserReviewsService userReviewsService;
 	
 	private boolean initPropReview = false;
-
-	//@GetMapping("/greeting")
-	//public RestReview greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-	//	return new RestReview(counter.incrementAndGet(), String.format(template, name));
-	//}
 
 	@GetMapping("/getPropertyReviews/{propertyID}")
 	public RestPropertyReview getPropertyReviews(@PathVariable(value = "propertyID") long propertyID){
@@ -53,16 +57,44 @@ public class RestReviewController {
 			init(123);
 		}
 		
-		//TODO:call tom
-		//This hard-coding is only until Tom's microservice endpoint is complete.
-		//I will get a JSONArray of properties to process later in the method
+
 		List<RestProperty> props = new ArrayList<RestProperty>();
-		RestProperty prop1 = new RestProperty((long)123, "Property Location 1", "Property name 1010", new Date(), new Date());
-		RestProperty prop2 = new RestProperty((long)124, "Property Location 2", "Property name 2020", new Date(), new Date());
-		RestProperty prop3 = new RestProperty((long)555, "Property Location 3", "Property name 555", new Date(), new Date());
-		props.add(prop1);
-		props.add(prop2);
-		props.add(prop3);
+
+
+		//Getting all properties associated w/ user from Scheduling Functional Area
+		JSONObject respjson = null;
+		String url = "http://localhost:8090/getMemberInfo/" + Long.toString(userID);
+		try{
+			respjson = new JSONObject(IOUtils.toString(new URL(url), Charset.forName("UTF-8")));
+
+			JSONArray retProps = respjson.getJSONArray("properties");
+			if (retProps != null){
+				for (int i = 0; i < retProps.length(); i++){
+					//Debug
+					System.out.println(retProps.getJSONObject(i));
+					
+					String start = retProps.getJSONObject(i).getString("startDate");
+					String end   = retProps.getJSONObject(i).getString("endDate");
+					String pName = retProps.getJSONObject(i).getString("name");
+					String ploc  = retProps.getJSONObject(i).getString("city");
+					long propID  = retProps.getJSONObject(i).getLong("propertyID");
+
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+					Date startd = df.parse(start);
+					Date endd   = df.parse(end);
+
+					RestProperty rp = new RestProperty(propID, ploc, pName, startd, endd);
+
+					props.add(rp);
+				}
+			}
+		} catch (JSONException e){
+			System.out.println("JSON Exception!");
+		} catch (IOException e){
+			System.out.println("IO Exception!");
+		} catch (ParseException e){
+			System.out.println("Parse Exception!");
+		}
 
 		List<RestPropertyReview> propReviews = new ArrayList<RestPropertyReview>();
 
@@ -77,7 +109,7 @@ public class RestReviewController {
 			}
 			rpr.setProperty(props.get(i));
 
-			//Filter out reviews not by this user (I know this is silly but im tired)
+			//Filter out reviews not by this user
 			List<RestReview> myUserReviews = rpr.getReviews();
 			if (myUserReviews != null){
 				Iterator<RestReview> itr = myUserReviews.iterator();
@@ -141,6 +173,7 @@ public class RestReviewController {
 	}
 	
 
+	//This is just to put data into the repository on startup.
 	private void init(long propertyID){
 		RestPropertyReview demoPropReview = new RestPropertyReview(propertyID, null, null);
 		RestPropertyReview demoPropReview2 = new RestPropertyReview(propertyID + 1, null, null);
