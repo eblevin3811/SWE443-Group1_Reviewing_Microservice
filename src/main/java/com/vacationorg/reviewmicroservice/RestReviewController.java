@@ -49,7 +49,7 @@ public class RestReviewController {
 		return toDisplay;
 	}
 
-	//If we call from user 2 (Timmy), there will be things in the database
+	//If we call from user 1 (Timmy), there will be things in the database
 	@GetMapping("/prepareReviewList/{userID}")
 	public List<RestPropertyReview> prepareReviewList(@PathVariable(value = "userID") long userID){
 		
@@ -57,48 +57,11 @@ public class RestReviewController {
 			init(123);
 		}
 		
-
-		List<RestProperty> props = new ArrayList<RestProperty>();
-
-
 		//Getting all properties associated w/ user from Scheduling Functional Area
-		JSONObject respjson = null;
-		String url = "http://localhost:8090/getMemberInfo/" + Long.toString(userID);
-		try{
-			respjson = new JSONObject(IOUtils.toString(new URL(url), Charset.forName("UTF-8")));
-
-			JSONArray retProps = respjson.getJSONArray("properties");
-			if (retProps != null){
-				for (int i = 0; i < retProps.length(); i++){
-					//Debug
-					System.out.println(retProps.getJSONObject(i));
-					
-					String start = retProps.getJSONObject(i).getString("startDate");
-					String end   = retProps.getJSONObject(i).getString("endDate");
-					String pName = retProps.getJSONObject(i).getString("name");
-					String ploc  = retProps.getJSONObject(i).getString("city");
-					Long propID  = retProps.getJSONObject(i).getLong("propertyID");
-
-					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-					Date startd = df.parse(start);
-					Date endd   = df.parse(end);
-
-					RestProperty rp = new RestProperty(propID, ploc, pName, startd, endd);
-
-					props.add(rp);
-				}
-			}
-		} catch (JSONException e){
-			System.out.println("JSON Exception!");
-		} catch (IOException e){
-			System.out.println("IO Exception!");
-		} catch (ParseException e){
-			System.out.println("Parse Exception!");
-		}
-
-		List<RestPropertyReview> propReviews = new ArrayList<RestPropertyReview>();
+		List<RestProperty> props = userReviewsService.getUserReviews(userID);
 
 		//For each property I get, assign it to or create a new RestPropertyReview
+		List<RestPropertyReview> propReviews = new ArrayList<RestPropertyReview>();
 		for (int i = 0; i < props.size(); i++){
 			
 			//Find or create a propertyReview for this property
@@ -181,8 +144,8 @@ public class RestReviewController {
 		//create some reviews to pre-exist in database
 		RestReview demoRestReview1 = new RestReview((long)111, "Demo user 1", (long)123, "demo comment 1", 5, propertyID, new Date());
 		RestReview demoRestReview2 = new RestReview((long)112, "Demo user 2", (long)456, "demo comment 2", 3, propertyID, new Date());
-		RestReview demoRestReview3 = new RestReview((long)113, "Timmy", (long)2, "Timmy liked this", 5, propertyID, new Date());
-		RestReview demoRestReview4 = new RestReview((long)114, "Timmy", (long)2, "Timmy disliked this", 2, propertyID + 1, new Date());
+		RestReview demoRestReview3 = new RestReview((long)113, "Timmy", (long)1, "Timmy liked this", 5, propertyID, new Date());
+		RestReview demoRestReview4 = new RestReview((long)114, "Timmy", (long)1, "Timmy disliked this", 2, propertyID + 1, new Date());
 		userReviewsService.saveRestReview(demoRestReview1);
 		userReviewsService.saveRestReview(demoRestReview2);
 		userReviewsService.saveRestReview(demoRestReview3);
