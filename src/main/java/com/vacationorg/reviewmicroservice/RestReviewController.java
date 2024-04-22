@@ -77,7 +77,7 @@ public class RestReviewController {
 					String end   = retProps.getJSONObject(i).getString("endDate");
 					String pName = retProps.getJSONObject(i).getString("name");
 					String ploc  = retProps.getJSONObject(i).getString("city");
-					long propID  = retProps.getJSONObject(i).getLong("propertyID");
+					Long propID  = retProps.getJSONObject(i).getLong("propertyID");
 
 					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 					Date startd = df.parse(start);
